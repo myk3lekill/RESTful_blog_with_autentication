@@ -1,0 +1,9 @@
+Flask
+WTForms
+Flask-Bootstrap
+Flask-CKEditor
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Login
+Werkzeug
+Flask-Gravatar

@@ -1,0 +1,105 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include "header.html" %}
+<!-- Page Header -->
+<header class="masthead" style="background-image: url('{{post.img_url}}')">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				<div class="post-heading">
+					<h1>{{post.title}}</h1>
+					<h2 class="subheading">{{post.subtitle}}</h2>
+					<span class="meta">Posted by
+
+                    <!-- O.1 Changed from post.author to post.author.name because post.author has become an object-->
+                    <a href="#">{{post.author.name}}</a>
+                    on {{post.date}}</span>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p>
+              <!-- C.7 Apply a Jinja Safe filter to the post.body to filter HTMl code -->
+            {{ post.body|safe }}
+          </p>
+           <hr>
+
+          <!-- L.3 If user id is 1 then they can see the Edit Post button -->
+            {% if current_user.id == 1 %}
+            <div class="clearfix">
+            <!-- D.4 Add dynamic href to edit-post method -->
+            <a class="btn btn-primary float-right" href="{{url_for('edit_post', post_id=post.id)}}">Edit Post</a>
+            </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </article>
+
+<article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto comment">
+            <!-- L.4 Add a Comments Area -->
+            <!-- P.2 Load the Ckeditor, configure it and create the wtf quickform -->
+            <!-- Load the CKEditor -->
+            <!-- T.4 Add an if statement to render comment's editor if user is logged in -->
+            {% if current_user.is_authenticated %}
+            {{ ckeditor.load() }}
+            <!-- Configure it with the name of the form field from CommentForm -->
+            {{ ckeditor.config(name='comment_text') }}
+            <!-- Create the wtf quickform from CommentForm -->
+            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            {% endif %}
+      </div>
+    </div>
+</article>
+
+<article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto comment">
+              <!-- U.1 Show all comments in post.comment -->
+                {% for comment in post.comments: %}
+              <ul class="commentList">
+
+
+                    <div class="commenterImage">
+                        <!-- U.2 Use Gravatar image surce for users avatar -->
+                      <img src="{{ comment.comment_author.email | gravatar }}" class="avatar">
+                    </div>
+                    <div class="commentText">
+                        <!-- U.2 Add comments using a jinja filter for html content -->
+                        {{ comment.text|safe }}
+                        {% if current_user.id == 1 %}
+                        <a href="{{ url_for('delete_comment', comment_id=comment.id, post_id=comment.post_id) }}">✘</a>
+                        {% endif %}
+                        <!-- U.3 Add the author name for comments -->
+                        <span class="date sub-text">{{comment.comment_author.name}}</span>
+
+                    </div>
+
+              </ul>
+                {% endfor %}
+            </div>
+
+            </div>
+          </div>
+      </div>
+    </div>
+  </article>
+
+  <hr>
+{% include "footer.html" %}
+{% endblock %}

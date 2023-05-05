@@ -1,0 +1,59 @@
+{% extends 'bootstrap/base.html' %}
+
+<!-- B.5 Add import for bootstrap wtf quickform support -->
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include "header.html" %}
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/edit-bg.jpg')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>New Post</h1>
+            <span class="subheading">You're going to make a great blog post!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- This is where the form will go -->
+
+            <!-- D.5 IF statement to differentiate Add and Edit -->
+            {% if is_edit: %}
+            <h1>Edit Post</h1>
+            <!-- D.6 Load ckeditor -->
+            {{ ckeditor.load() }}
+
+            <!-- D.7 Configure the ckeditor to tell it which field in WTForm will need to be a CKEditor. -->
+            {{ ckeditor.config(name='body') }}
+
+            <!-- D.8 Add WTF quickform -->
+            <!-- D.9 Add a button_map parameter to WTF form to make button primary and blue-->
+            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            {% else: %}
+            <h1>New Post</h1>
+            <!-- B.6 Load ckeditor -->
+            {{ ckeditor.load() }}
+
+            <!-- B.7 Configure the ckeditor to tell it which field in WTForm will need to be a CKEditor. -->
+            {{ ckeditor.config(name='body') }}
+
+            <!-- B.8 Add WTF quickform -->
+            <!-- B.10 Add a button_map parameter to WTF form to make button primary and blue-->
+            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+            {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+{% include "footer.html" %}
+{% endblock %}
